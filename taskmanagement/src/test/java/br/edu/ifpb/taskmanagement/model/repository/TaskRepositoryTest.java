@@ -9,6 +9,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -64,13 +65,36 @@ public class TaskRepositoryTest {
     @Order(3)
     void findAll() {
 
+        TaskEntity task2 = new TaskEntity();
+        task2 = new TaskEntity();
+        task2.setCompleted(false);
+        task2.setTitle("titulo2");
+        task2.setDescription("descrição2");
+
+        taskRepository.save(task1);
+        taskRepository.save(task2);
+
+        List<TaskEntity> taskList = taskRepository.findAll();
+
+        assertNotNull(taskList);
+        assertEquals(2, taskList.size());
+        assertNotNull(taskList.get(0).getId());
+        assertNotNull(taskList.get(1).getId());
+        assertEquals(1l, taskList.get(0).getId());
+        assertEquals(2l, taskList.get(1).getId());
+
     }
 
     @Test
 
     void delete() {
         taskRepository.save(task1);
+
+        assertTrue(taskRepository.findById(1l).isPresent(), "Task should be present");
+
         taskRepository.deleteById(1L);
+
+        assertFalse(taskRepository.findById(1l).isPresent(), "Task should be deleted");
 
     }
 
